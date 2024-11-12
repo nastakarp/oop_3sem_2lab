@@ -7,42 +7,52 @@ import org.xml.sax.helpers.DefaultHandler;
 public class Main {
 
     public static void main(String[] args) {
+        // Создаем объект Scanner для чтения ввода пользователя из консоли
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
+            // Запрашиваем у пользователя путь к файлу или команду выхода
             System.out.println("Введите путь до файла-справочника или 'exit' для завершения:");
-            String filePath = scanner.nextLine();
+            String filePath = scanner.nextLine(); // Считываем введенный путь или команду
+
+            // Проверка, ввел ли пользователь "exit" для завершения программы
             if (filePath.equalsIgnoreCase("exit")) {
                 System.out.println("Завершение программы.");
                 break;
             }
 
-            // Замеряем время начала обработки
+            // Замеряем время начала обработки для отслеживания времени выполнения
             long startTime = System.currentTimeMillis();
 
-            // Обработка файла
+            // Переменная для хранения данных, считанных из файла
             List<Map<String, String>> records;
+
+            // Проверяем расширение файла и вызываем соответствующий метод обработки
             if (filePath.endsWith(".csv")) {
-                records = loadCsv(filePath);
+                records = loadCsv(filePath); // Загружаем данные из CSV файла
             } else if (filePath.endsWith(".xml")) {
-                records = loadXml(filePath);
+                records = loadXml(filePath); // Загружаем данные из XML файла
             } else {
+                // Сообщаем пользователю о неподдерживаемом формате и возвращаемся к началу цикла
                 System.out.println("Формат файла не поддерживается. Пожалуйста, используйте CSV или XML.");
                 continue;
             }
 
             // Замеряем время окончания обработки
             long endTime = System.currentTimeMillis();
+            // Рассчитываем общее время обработки файла
             long processingTime = endTime - startTime;
 
-            // Вывод статистики
+            // Если данные были успешно считаны, выводим статистику
             if (!records.isEmpty()) {
-                printDuplicates(records);
-                printFloorStats(records);
+                printDuplicates(records); // Поиск и вывод дублирующихся записей
+                printFloorStats(records); // Вывод статистики этажей по городам
+                // Печатаем общее время, затраченное на обработку файла
                 System.out.println("Время обработки файла: " + processingTime + " мс.");
             }
         }
     }
+
 
     // Чтение CSV файла
     private static List<Map<String, String>> loadCsv(String filePath) {
